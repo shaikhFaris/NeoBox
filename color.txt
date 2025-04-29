@@ -1,0 +1,6 @@
+dark-purple 	#711c91
+pink #ea00d9
+cyan #0abdc6
+blue #4949F3
+bg #091833
+green #0FF74D
