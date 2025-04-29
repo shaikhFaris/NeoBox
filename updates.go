@@ -9,12 +9,23 @@ import (
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	// for the pass display
 	case dataFetchedMsg:
 		m.table = table.New(
 			table.WithRows(msg),
 			table.WithFocused(true),
+			table.WithHeight(17), // Its perfect dont change
 			table.WithColumns(m.table.Columns()),
 			table.WithStyles(TableStyles),
+		)
+		return m, nil
+	case dataFetchedMsg2:
+		m.table2 = table.New(
+			table.WithRows(msg),
+			table.WithFocused(true),
+			table.WithHeight(13),
+			table.WithColumns(m.table2.Columns()),
+			table.WithStyles(TableStyles2),
 		)
 		return m, nil
 	// Is it a key press?
@@ -41,6 +52,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.cursor == 0 {
 					return m, fetchDataCmd()
 				}
+				if m.cursor == 1 {
+					return m, fetchDataCmd2()
+				}
 				return m, nil
 			}
 		}
@@ -55,13 +69,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.page = -1
 			case "2":
 				m.page = 1
+				return m, fetchDataCmd2()
 			case "3":
 				m.page = 2
 			case "enter":
 				row := m.table.SelectedRow()
 				if len(row) > 1 {
 					m.value = fmt.Sprintf("%s: 👤 %s → 🔐 %s", row[1], row[2], row[3])
-
 				}
 				return m, nil
 
@@ -76,6 +90,35 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.table, cmd = m.table.Update(msg)
 			return m, cmd
 		}
+
+		if m.page == 1 {
+			// manager
+			var cmd tea.Cmd
+			switch msg.String() {
+			case "ctrl+c", "q":
+				return m, tea.Quit
+			case "0":
+				m.page = -1
+			case "1":
+				m.page = 0
+				return m, fetchDataCmd()
+			case "3":
+				m.page = 2
+
+			// case "enter":
+			// 	return m, nil
+			case "esc":
+				if m.table2.Focused() {
+					m.table2.Blur()
+				} else {
+					m.table2.Focus()
+				}
+			}
+
+			m.table2, cmd = m.table2.Update(msg)
+			return m, cmd
+		}
+
 		switch msg.String() {
 
 		// These keys should exit the program.
@@ -91,6 +134,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, fetchDataCmd()
 		case "2":
 			m.page = 1
+			return m, fetchDataCmd2()
 		case "3":
 			m.page = 2
 		}

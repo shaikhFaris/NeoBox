@@ -16,6 +16,7 @@ type model struct {
 	cursor  int      // which to-do list item our cursor is pointing at
 	page    int
 	table   table.Model
+	table2  table.Model
 	value   string // to store the selected row's password for display
 }
 
@@ -28,6 +29,7 @@ const (
 )
 
 type dataFetchedMsg []table.Row
+type dataFetchedMsg2 []table.Row
 
 var db *sql.DB
 
@@ -80,9 +82,34 @@ func fetchData() []table.Row {
 	}
 	return rowsData
 }
+func fetchData2() []table.Row {
+	var rowsData []table.Row
+	rows, err := db.Query("SELECT id, service FROM pass_manager")
+	if err != nil {
+		panic(err)
+	}
+	for rows.Next() {
+		var id int
+		var service string
+		err := rows.Scan(&id, &service)
+		if err != nil {
+			panic(err)
+		}
+		// m.table=append(m.table.Rows())
+		tablerow := table.Row{strconv.Itoa(id), service}
+		rowsData = append(rowsData, tablerow)
+	}
+	return rowsData
+}
 func fetchDataCmd() tea.Cmd {
 	return func() tea.Msg {
 		data := fetchData()
 		return dataFetchedMsg(data)
+	}
+}
+func fetchDataCmd2() tea.Cmd {
+	return func() tea.Msg {
+		data := fetchData2()
+		return dataFetchedMsg2(data)
 	}
 }

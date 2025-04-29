@@ -1,3 +1,0 @@
-use go run . to run go if you have many files
-
-In go the global vars and the functions are accessible by all files in a folder

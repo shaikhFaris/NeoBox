@@ -72,6 +72,15 @@ func (m model) View() string {
 		mainContent += hintStyle.Render("• ↑/↓ navigate  • ↵ reveal password.")
 	}
 
+	if m.page == 1 {
+		var baseTableStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#ffffff")).
+			Background(lipgloss.Color("#0A0118FF"))
+			// BorderStyle(lipgloss.RoundedBorder()).
+			// BorderForeground(lipgloss.Color("#4949F3"))
+		mainContent = baseTableStyle.Render(m.table2.View())
+	}
+
 	// Centered main content (height - 1 to leave room for footer)
 	centeredStyle := lipgloss.NewStyle().
 		Width(width).
