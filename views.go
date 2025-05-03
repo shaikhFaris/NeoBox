@@ -89,28 +89,39 @@ func (m model) View() string {
 			if m.cursor2 == i {
 				cursor = ">"
 			}
+			// cursorStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#0FF74D")).Bold(true).Background(lipgloss.Color("#0A0118FF"))
+			// OptionTextStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff")).Bold(true).Background(lipgloss.Color("#0A0118FF"))
 
 			// %-*s ensures padding for left alignment
-			options += fmt.Sprintf("%s %d. %-*s\n", cursor, i+1, maxLen, choice)
+			options += fmt.Sprintf("%s %d. %-*s\n\n", cursor, i+1, maxLen, choice)
 		}
-		optionsStyle := lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Height(14).AlignVertical(lipgloss.Center).PaddingLeft(6).PaddingRight(7)
+		optionsStyle := lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Height(14).AlignVertical(lipgloss.Center).PaddingLeft(6).PaddingRight(7).Foreground(lipgloss.Color("#ffffff"))
 		options = optionsStyle.Render(options)
 
 		if m.option == "create" {
+			// m.textInput
 			options = fmt.Sprintf(
-				"What’s your favorite Pokémon?\n\n%s\n\n%s",
+				"Enter your Details\n\n%s\n\n%s\n\n%s\n\n%s",
 				m.textInput.View(),
-				"(esc to quit)",
+				m.textInput2.View(),
+				m.textInput3.View(),
+				lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Faint(true).Render("• tab: switch • esc: exit\n• enter: submit"),
 			)
+			options = lipgloss.NewStyle().PaddingLeft(10).Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#ffffff")).Height(14).Render(options)
 		}
 
+		var baseTableStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#ffffff")).
+			Background(lipgloss.Color("#0A0118FF"))
 		if m.state == tableView {
-			mainContent = lipgloss.JoinHorizontal(lipgloss.Top, m.table2.View(), options)
+			mainContent = lipgloss.JoinHorizontal(lipgloss.Top, baseTableStyle.Render(m.table2.View()), options)
 		} else {
-			mainContent = lipgloss.JoinHorizontal(lipgloss.Top, m.table2.View(), options)
+			mainContent = lipgloss.JoinHorizontal(lipgloss.Top, baseTableStyle.Render(m.table2.View()), options)
 		}
-		mainContent = lipgloss.NewStyle().Padding(2).Background(lipgloss.Color("#0A0118FF")).BorderStyle(lipgloss.RoundedBorder()).BorderBackground(lipgloss.Color("#0A0118FF")).BorderForeground(lipgloss.Color("#0abdc6")).Render(mainContent)
-		// mainContent += helpStyle.Render(fmt.Sprintf("\ntab: focus next • n: new %s • q: exit\n", x))
+		mainContent = lipgloss.NewStyle().Padding(2).PaddingBottom(1).MarginTop(4).PaddingRight(3).Background(lipgloss.Color("#0A0118FF")).BorderStyle(lipgloss.RoundedBorder()).BorderBackground(lipgloss.Color("#0A0118FF")).BorderForeground(lipgloss.Color("#0FF74D")).Render(mainContent)
+		mainContent += "\n"
+
+		mainContent += hintStyle.Render("\n• tab: switch focus • b: back • q: exit\n")
 
 	}
 

@@ -13,18 +13,22 @@ import (
 )
 
 type model struct {
-	choices   []string // items on the to-do list
-	cursor    int      // which to-do list item our cursor is pointing at
-	page      int
-	table     table.Model
-	table2    table.Model
-	value     string // to store the selected row's password for display
-	state     sessionState
-	cursor2   int
-	choices2  []string
-	option    string
-	textInput textinput.Model
-	err       error
+	choices     []string // items on the to-do list
+	cursor      int      // which to-do list item our cursor is pointing at
+	page        int
+	table       table.Model
+	table2      table.Model
+	value       string // to store the selected row's password for display
+	state       sessionState
+	cursor2     int
+	choices2    []string
+	option      string
+	textInput   textinput.Model
+	textInput2  textinput.Model
+	textInput3  textinput.Model
+	err         error
+	createIndex int
+	formValue   [3]string
 }
 
 const (
@@ -123,4 +127,14 @@ func fetchDataCmd2() tea.Cmd {
 		data := fetchData2()
 		return dataFetchedMsg2(data)
 	}
+}
+
+func insertData(s1 string, s2 string, s3 string) string {
+	query := fmt.Sprintf(`INSERT INTO pass_manager (username, service, password) VALUES ('%s', '%s', '%s');`, s1, s2, s3)
+	_, err := db.Query(query)
+	if err != nil {
+		// panic(err)
+		return "failed to update DB"
+	}
+	return "success"
 }

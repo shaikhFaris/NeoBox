@@ -24,16 +24,16 @@ var TableStyles = table.Styles{
 var TableStyles2 = table.Styles{
 	Header: lipgloss.NewStyle().
 		Background(lipgloss.Color("#0A0118FF")).
-		Foreground(lipgloss.Color("#0abdc6")).
+		Foreground(lipgloss.Color("#0FF74D")).
 		BorderStyle(lipgloss.NormalBorder()).
-		BorderBottomForeground(lipgloss.Color("#0abdc6")).
+		BorderBottomForeground(lipgloss.Color("#0FF74D")).
 		BorderBottomBackground(lipgloss.Color("#0A0118FF")).
 		BorderBottom(true).
 		Bold(true).Padding(0, 2),
 
 	Selected: lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#000000")).
-		Background(lipgloss.Color("#0abdc6")),
+		Background(lipgloss.Color("#0FF74D")),
 
 	Cell: lipgloss.NewStyle().Padding(0, 2),
 }

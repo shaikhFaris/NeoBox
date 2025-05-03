@@ -99,28 +99,65 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			var cmd tea.Cmd
 			switch msg.String() {
 
-			case "ctrl+c", "q":
+			case "ctrl+c":
 				return m, tea.Quit
+
+			case "q":
+				if m.state != optionsView && m.option != "create" {
+					return m, tea.Quit
+				}
+
 			case "tab":
 				if m.state == tableView {
 					m.state = optionsView
+					return m, nil
+				}
+				if m.state == optionsView && m.option == "create" {
+					m.createIndex++
+					if m.createIndex > 2 {
+						m.createIndex = 0
+					}
+
+					switch m.createIndex {
+					case 0:
+						m.textInput.Focus()
+						m.textInput2.Blur()
+						m.textInput3.Blur()
+					case 1:
+						m.textInput.Blur()
+						m.textInput2.Focus()
+						m.textInput3.Blur()
+					case 2:
+						m.textInput.Blur()
+						m.textInput2.Blur()
+						m.textInput3.Focus()
+					}
+					return m, nil
 				} else {
 					m.state = tableView
+					return m, nil
 				}
 			case "0":
-				m.page = -1
+				if m.state != optionsView && m.option != "create" {
+					m.page = -1
+				}
 			case "b":
-				m.page = -1
+				if m.state != optionsView && m.option != "create" {
+					m.page = -1
+				}
 			case "1":
-				m.page = 0
-				return m, fetchDataCmd()
+				if m.state != optionsView && m.option != "create" {
+					m.page = 0
+					return m, fetchDataCmd()
+				}
 			case "3":
-				m.page = 2
+				if m.state != optionsView && m.option != "create" {
+					m.page = 2
+				}
 
 				// for optionsView
 			case "up", "k":
 				if m.state == optionsView {
-
 					if m.cursor2 > 0 {
 						m.cursor2--
 					}
@@ -128,15 +165,27 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// The "down" and "j" keys move the cursor down
 			case "down", "j":
 				if m.state == optionsView {
-
 					if m.cursor2 < len(m.choices2)-1 {
 						m.cursor2++
 					}
 				}
 
 			case "enter":
-				if m.state == optionsView && m.cursor2 == 0 {
+				if m.state == optionsView && m.cursor2 == 0 && m.option == "" {
 					m.option = "create"
+				}
+				if m.state == optionsView && m.option == "create" {
+					if len(m.textInput.Value()) != 0 && len(m.textInput2.Value()) != 0 && len(m.textInput3.Value()) != 0 {
+						m.formValue[0] = m.textInput.Value()
+						m.formValue[1] = m.textInput2.Value()
+						m.formValue[2] = m.textInput3.Value()
+						m.option = ""
+						m.textInput.SetValue("")
+						m.textInput2.SetValue("")
+						m.textInput3.SetValue("")
+						insertData(m.formValue[0], m.formValue[1], m.formValue[2])
+						return m, nil
+					}
 				}
 
 			case "esc":
@@ -151,15 +200,35 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.state == optionsView && m.option == "create" {
 					m.option = ""
 					m.textInput.SetValue("")
+					m.textInput2.SetValue("")
+					m.textInput3.SetValue("")
+					return m, nil
 				}
 
 			}
+
 			if m.state == tableView {
 				m.table2, cmd = m.table2.Update(msg)
 				return m, cmd
 			}
 			if m.state == optionsView && m.option == "create" {
-				m.textInput, cmd = m.textInput.Update(msg)
+				switch m.createIndex {
+				case 0:
+					// m.textInput.Focus()
+					// m.textInput2.Blur()
+					// m.textInput3.Blur()
+					m.textInput, cmd = m.textInput.Update(msg)
+				case 1:
+					// m.textInput.Blur()
+					// m.textInput2.Focus()
+					// m.textInput3.Blur()
+					m.textInput2, cmd = m.textInput2.Update(msg)
+				case 2:
+					// m.textInput.Blur()
+					// m.textInput2.Blur()
+					// m.textInput3.Focus()
+					m.textInput3, cmd = m.textInput3.Update(msg)
+				}
 				return m, cmd
 			}
 		}
@@ -167,19 +236,25 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 
 		// These keys should exit the program.
-		case "ctrl+c", "q":
+		case "ctrl+c":
+			return m, tea.Quit
+		case "q":
+
 			return m, tea.Quit
 
 			// The "enter" key and the spacebar (a literal space) toggle
 			// the selected state for the item that the cursor is pointing at.
 		case "0":
 			m.page = -1
+
 		case "1":
 			m.page = 0
 			return m, fetchDataCmd()
+
 		case "2":
 			m.page = 1
 			return m, fetchDataCmd2()
+
 		case "3":
 			m.page = 2
 		}

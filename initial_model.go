@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/charmbracelet/bubbles/table"
 	"github.com/charmbracelet/bubbles/textinput"
+	"github.com/charmbracelet/lipgloss"
 )
 
 func initialModel() model {
@@ -39,20 +40,50 @@ func initialModel() model {
 	)
 
 	ti := textinput.New()
-	ti.Placeholder = "Pikachu"
+	ti.Placeholder = "Service"
 	ti.Focus()
 	ti.CharLimit = 156
 	ti.Width = 20
+	ti.Cursor.Style = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
+	ti.Cursor.TextStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
+	ti.PlaceholderStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Faint(true)
+	ti.TextStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
+
+	ti2 := textinput.New()
+	ti2.Placeholder = "Username"
+	ti2.CharLimit = 156
+	ti2.Blur()
+	ti2.Width = 20
+	ti2.Cursor.Style = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
+	ti2.Cursor.TextStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
+	ti2.PlaceholderStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Faint(true)
+	ti2.TextStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
+
+	ti3 := textinput.New()
+	ti3.Placeholder = "Password"
+	ti3.CharLimit = 156
+	ti3.Blur()
+	ti3.Width = 20
+	ti3.EchoMode = textinput.EchoPassword
+	ti3.EchoCharacter = '•'
+	ti3.Cursor.TextStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
+	ti3.Cursor.Style = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
+	ti3.PlaceholderStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Faint(true)
+	ti3.TextStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
 
 	return model{
-		choices:   []string{"Display Passwords", "Manage Passwords", "Generate Passwords"},
-		choices2:  []string{"Create", "Delete"},
-		page:      -1,
-		table:     t,
-		table2:    t2,
-		value:     "",
-		state:     tableView,
-		textInput: ti,
-		err:       nil,
+		choices:     []string{"Display Passwords", "Manage Passwords", "Generate Passwords"},
+		choices2:    []string{"Create", "Delete"},
+		page:        -1,
+		table:       t,
+		table2:      t2,
+		value:       "",
+		state:       tableView,
+		textInput:   ti,
+		textInput2:  ti2,
+		textInput3:  ti3,
+		err:         nil,
+		option:      "",
+		createIndex: 0,
 	}
 }
