@@ -7,29 +7,40 @@ import (
 	"strconv"
 
 	"github.com/charmbracelet/bubbles/table"
+	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	_ "github.com/lib/pq"
 )
 
 type model struct {
-	choices []string // items on the to-do list
-	cursor  int      // which to-do list item our cursor is pointing at
-	page    int
-	table   table.Model
-	table2  table.Model
-	value   string // to store the selected row's password for display
+	choices   []string // items on the to-do list
+	cursor    int      // which to-do list item our cursor is pointing at
+	page      int
+	table     table.Model
+	table2    table.Model
+	value     string // to store the selected row's password for display
+	state     sessionState
+	cursor2   int
+	choices2  []string
+	option    string
+	textInput textinput.Model
+	err       error
 }
 
 const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "farisgres@78"
-	dbname   = "neobox"
+	host                   = "localhost"
+	port                   = 5432
+	user                   = "postgres"
+	password               = "farisgres@78"
+	dbname                 = "neobox"
+	tableView sessionState = iota
+	optionsView
 )
 
 type dataFetchedMsg []table.Row
 type dataFetchedMsg2 []table.Row
+type sessionState uint
+type errMsg error
 
 var db *sql.DB
 

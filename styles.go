@@ -24,16 +24,28 @@ var TableStyles = table.Styles{
 var TableStyles2 = table.Styles{
 	Header: lipgloss.NewStyle().
 		Background(lipgloss.Color("#0A0118FF")).
-		Foreground(lipgloss.Color("#4949F3")).
+		Foreground(lipgloss.Color("#0abdc6")).
 		BorderStyle(lipgloss.NormalBorder()).
-		BorderBottomForeground(lipgloss.Color("#4949F3")).
+		BorderBottomForeground(lipgloss.Color("#0abdc6")).
 		BorderBottomBackground(lipgloss.Color("#0A0118FF")).
 		BorderBottom(true).
 		Bold(true).Padding(0, 2),
 
 	Selected: lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#000000")).
-		Background(lipgloss.Color("#4949F3")),
+		Background(lipgloss.Color("#0abdc6")),
 
 	Cell: lipgloss.NewStyle().Padding(0, 2),
 }
+
+// var modelStyle = lipgloss.NewStyle().
+// 	Width(15).
+// 	Height(5).
+// 	Align(lipgloss.Center, lipgloss.Center).
+// 	BorderStyle(lipgloss.HiddenBorder())
+// var focusedModelStyle = lipgloss.NewStyle().
+// 	Width(15).
+// 	Height(5).
+// 	Align(lipgloss.Center, lipgloss.Center).
+// 	BorderStyle(lipgloss.NormalBorder()).
+// 	BorderForeground(lipgloss.Color("69"))

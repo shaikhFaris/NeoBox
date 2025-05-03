@@ -1,6 +1,9 @@
 package main
 
-import "github.com/charmbracelet/bubbles/table"
+import (
+	"github.com/charmbracelet/bubbles/table"
+	"github.com/charmbracelet/bubbles/textinput"
+)
 
 func initialModel() model {
 	// models means objects made from structs
@@ -35,11 +38,21 @@ func initialModel() model {
 		table.WithStyles(TableStyles2),
 	)
 
+	ti := textinput.New()
+	ti.Placeholder = "Pikachu"
+	ti.Focus()
+	ti.CharLimit = 156
+	ti.Width = 20
+
 	return model{
-		choices: []string{"Display Passwords", "Manage Passwords", "Generate Passwords"},
-		page:    -1,
-		table:   t,
-		table2:  t2,
-		value:   "",
+		choices:   []string{"Display Passwords", "Manage Passwords", "Generate Passwords"},
+		choices2:  []string{"Create", "Delete"},
+		page:      -1,
+		table:     t,
+		table2:    t2,
+		value:     "",
+		state:     tableView,
+		textInput: ti,
+		err:       nil,
 	}
 }

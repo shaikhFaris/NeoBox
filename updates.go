@@ -8,6 +8,7 @@ import (
 )
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	// you can also get this triggered when the m state is changed
 	switch msg := msg.(type) {
 	// for the pass display
 	case dataFetchedMsg:
@@ -67,6 +68,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, tea.Quit
 			case "0":
 				m.page = -1
+			case "b":
+				m.page = -1
 			case "2":
 				m.page = 1
 				return m, fetchDataCmd2()
@@ -95,9 +98,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// manager
 			var cmd tea.Cmd
 			switch msg.String() {
+
 			case "ctrl+c", "q":
 				return m, tea.Quit
+			case "tab":
+				if m.state == tableView {
+					m.state = optionsView
+				} else {
+					m.state = tableView
+				}
 			case "0":
+				m.page = -1
+			case "b":
 				m.page = -1
 			case "1":
 				m.page = 0
@@ -105,18 +117,51 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "3":
 				m.page = 2
 
-			// case "enter":
-			// 	return m, nil
-			case "esc":
-				if m.table2.Focused() {
-					m.table2.Blur()
-				} else {
-					m.table2.Focus()
-				}
-			}
+				// for optionsView
+			case "up", "k":
+				if m.state == optionsView {
 
-			m.table2, cmd = m.table2.Update(msg)
-			return m, cmd
+					if m.cursor2 > 0 {
+						m.cursor2--
+					}
+				}
+			// The "down" and "j" keys move the cursor down
+			case "down", "j":
+				if m.state == optionsView {
+
+					if m.cursor2 < len(m.choices2)-1 {
+						m.cursor2++
+					}
+				}
+
+			case "enter":
+				if m.state == optionsView && m.cursor2 == 0 {
+					m.option = "create"
+				}
+
+			case "esc":
+				if m.state == tableView {
+
+					if m.table2.Focused() {
+						m.table2.Blur()
+					} else {
+						m.table2.Focus()
+					}
+				}
+				if m.state == optionsView && m.option == "create" {
+					m.option = ""
+					m.textInput.SetValue("")
+				}
+
+			}
+			if m.state == tableView {
+				m.table2, cmd = m.table2.Update(msg)
+				return m, cmd
+			}
+			if m.state == optionsView && m.option == "create" {
+				m.textInput, cmd = m.textInput.Update(msg)
+				return m, cmd
+			}
 		}
 
 		switch msg.String() {

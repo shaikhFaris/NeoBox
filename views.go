@@ -25,12 +25,12 @@ func (m model) View() string {
 
 		mainContent +=
 			`
-██████╗ ██╗      █████╗  ██████╗██╗  ██╗    ██████╗  ██████╗ ██╗  ██╗
-██╔══██╗██║     ██╔══██╗██╔════╝██║ ██╔╝    ██╔══██╗██╔═══██╗╚██╗██╔╝
-██████╔╝██║     ███████║██║     █████╔╝     ██████╔╝██║   ██║ ╚███╔╝ 
-██╔══██╗██║     ██╔══██║██║     ██╔═██╗     ██╔══██╗██║   ██║ ██╔██╗ 
-██████╔╝███████╗██║  ██║╚██████╗██║  ██╗    ██████╔╝╚██████╔╝██╔╝ ██╗
-╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝    ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
+███╗   ██╗███████╗ ██████╗     ██████╗  ██████╗ ██╗  ██╗
+████╗  ██║██╔════╝██╔═══██╗    ██╔══██╗██╔═══██╗╚██╗██╔╝
+██╔██╗ ██║█████╗  ██║   ██║    ██████╔╝██║   ██║ ╚███╔╝ 
+██║╚██╗██║██╔══╝  ██║   ██║    ██╔══██╗██║   ██║ ██╔██╗ 
+██║ ╚████║███████╗╚██████╔╝    ██████╔╝╚██████╔╝██╔╝ ██╗
+╚═╝  ╚═══╝╚══════╝ ╚═════╝     ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
 `
 		mainContent += hooklinestyle.Render("\nA quiet vault where your passwords rest, waiting for the right command.")
 		mainContent += "\n\n"
@@ -69,16 +69,49 @@ func (m model) View() string {
 			Background(lipgloss.Color("#ea00d9"))
 
 		mainContent = baseTableStyle.Render(m.table.View()) + "\n" + valueStyle.Render(m.value) + "\n\n"
-		mainContent += hintStyle.Render("• ↑/↓ navigate  • ↵ reveal password.")
+		mainContent += hintStyle.Render("• ↑/↓ navigate  • ↵ reveal password  • b back")
 	}
 
 	if m.page == 1 {
-		var baseTableStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#ffffff")).
-			Background(lipgloss.Color("#0A0118FF"))
-			// BorderStyle(lipgloss.RoundedBorder()).
-			// BorderForeground(lipgloss.Color("#4949F3"))
-		mainContent = baseTableStyle.Render(m.table2.View())
+		// var baseTableStyle = lipgloss.NewStyle().
+		// 	Foreground(lipgloss.Color("#ffffff")).
+		// 	Background(lipgloss.Color("#0A0118FF"))
+		maxLen := 0
+		options := ""
+		for _, choice := range m.choices2 {
+			if len(choice) > maxLen {
+				maxLen = len(choice)
+			}
+		}
+
+		for i, choice := range m.choices2 {
+			cursor := " "
+			if m.cursor2 == i {
+				cursor = ">"
+			}
+
+			// %-*s ensures padding for left alignment
+			options += fmt.Sprintf("%s %d. %-*s\n", cursor, i+1, maxLen, choice)
+		}
+		optionsStyle := lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Height(14).AlignVertical(lipgloss.Center).PaddingLeft(6).PaddingRight(7)
+		options = optionsStyle.Render(options)
+
+		if m.option == "create" {
+			options = fmt.Sprintf(
+				"What’s your favorite Pokémon?\n\n%s\n\n%s",
+				m.textInput.View(),
+				"(esc to quit)",
+			)
+		}
+
+		if m.state == tableView {
+			mainContent = lipgloss.JoinHorizontal(lipgloss.Top, m.table2.View(), options)
+		} else {
+			mainContent = lipgloss.JoinHorizontal(lipgloss.Top, m.table2.View(), options)
+		}
+		mainContent = lipgloss.NewStyle().Padding(2).Background(lipgloss.Color("#0A0118FF")).BorderStyle(lipgloss.RoundedBorder()).BorderBackground(lipgloss.Color("#0A0118FF")).BorderForeground(lipgloss.Color("#0abdc6")).Render(mainContent)
+		// mainContent += helpStyle.Render(fmt.Sprintf("\ntab: focus next • n: new %s • q: exit\n", x))
+
 	}
 
 	// Centered main content (height - 1 to leave room for footer)
