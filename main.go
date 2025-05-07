@@ -26,9 +26,11 @@ type model struct {
 	textInput   textinput.Model
 	textInput2  textinput.Model
 	textInput3  textinput.Model
+	textInput4  textinput.Model
 	err         error
 	createIndex int
 	formValue   [3]string
+	dbOpMsg     string
 }
 
 const (
@@ -44,7 +46,9 @@ const (
 type dataFetchedMsg []table.Row
 type dataFetchedMsg2 []table.Row
 type sessionState uint
-type errMsg error
+type clearMsg struct{}
+
+// type errMsg error
 
 var db *sql.DB
 
@@ -136,5 +140,14 @@ func insertData(s1 string, s2 string, s3 string) string {
 		// panic(err)
 		return "failed to update DB"
 	}
-	return "success"
+	return "Added\nsuccessfully"
+}
+
+func deleteData(id int) string {
+	query := fmt.Sprintf(`DELETE FROM pass_manager WHERE id=%d`, id)
+	_, err := db.Query(query)
+	if err != nil {
+		return "error\n(might be because this id does'nt exist)"
+	}
+	return "deleted\nsuccessfully"
 }

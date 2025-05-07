@@ -71,6 +71,16 @@ func initialModel() model {
 	ti3.PlaceholderStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Faint(true)
 	ti3.TextStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
 
+	ti4 := textinput.New()
+	ti4.Placeholder = "ID"
+	ti4.CharLimit = 156
+	ti4.Blur()
+	ti4.Width = 20
+	ti4.Cursor.TextStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
+	ti4.Cursor.Style = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
+	ti4.PlaceholderStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Faint(true)
+	ti4.TextStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
+
 	return model{
 		choices:     []string{"Display Passwords", "Manage Passwords", "Generate Passwords"},
 		choices2:    []string{"Create", "Delete"},
@@ -82,8 +92,10 @@ func initialModel() model {
 		textInput:   ti,
 		textInput2:  ti2,
 		textInput3:  ti3,
+		textInput4:  ti4,
 		err:         nil,
 		option:      "",
 		createIndex: 0,
+		dbOpMsg:     "",
 	}
 }

@@ -37,15 +37,3 @@ var TableStyles2 = table.Styles{
 
 	Cell: lipgloss.NewStyle().Padding(0, 2),
 }
-
-// var modelStyle = lipgloss.NewStyle().
-// 	Width(15).
-// 	Height(5).
-// 	Align(lipgloss.Center, lipgloss.Center).
-// 	BorderStyle(lipgloss.HiddenBorder())
-// var focusedModelStyle = lipgloss.NewStyle().
-// 	Width(15).
-// 	Height(5).
-// 	Align(lipgloss.Center, lipgloss.Center).
-// 	BorderStyle(lipgloss.NormalBorder()).
-// 	BorderForeground(lipgloss.Color("69"))

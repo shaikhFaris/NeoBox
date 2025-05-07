@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
@@ -29,6 +31,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			table.WithStyles(TableStyles2),
 		)
 		return m, nil
+
+	case clearMsg:
+		m.dbOpMsg = ""
+		return m, nil
+
 	// Is it a key press?
 	case tea.KeyMsg:
 		// Cool, what was the actual key pressed?
@@ -174,6 +181,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.state == optionsView && m.cursor2 == 0 && m.option == "" {
 					m.option = "create"
 				}
+				if m.state == optionsView && m.cursor2 == 1 && m.option == "" {
+					m.option = "delete"
+					m.textInput4.Focus()
+				}
 				if m.state == optionsView && m.option == "create" {
 					if len(m.textInput.Value()) != 0 && len(m.textInput2.Value()) != 0 && len(m.textInput3.Value()) != 0 {
 						m.formValue[0] = m.textInput.Value()
@@ -183,11 +194,31 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.textInput.SetValue("")
 						m.textInput2.SetValue("")
 						m.textInput3.SetValue("")
-						insertData(m.formValue[0], m.formValue[1], m.formValue[2])
-						return m, nil
+						UpdateMsg := insertData(m.formValue[0], m.formValue[1], m.formValue[2])
+						m.dbOpMsg = UpdateMsg
+						return m, tea.Batch(
+							tea.Tick(2*time.Second, func(t time.Time) tea.Msg {
+								return clearMsg{}
+							}), fetchDataCmd(),
+						)
 					}
 				}
 
+				if m.state == optionsView && m.option == "delete" {
+					parsedId, err := strconv.ParseInt(m.textInput4.Value(), 10, 64)
+					if len(m.textInput4.Value()) != 0 && err == nil {
+						m.option = ""
+						m.textInput4.SetValue("")
+						deleteMsg := deleteData(int(parsedId))
+						m.dbOpMsg = deleteMsg
+						return m, tea.Batch(tea.Tick(2*time.Second, func(t time.Time) tea.Msg {
+							return clearMsg{}
+						}), fetchDataCmd2(),
+						)
+					}
+				}
+
+			// when esc jey is pressed
 			case "esc":
 				if m.state == tableView {
 
@@ -204,9 +235,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.textInput3.SetValue("")
 					return m, nil
 				}
-
+				if m.state == optionsView && m.option == "delete" {
+					m.option = ""
+					m.textInput4.SetValue("")
+					return m, nil
+				}
 			}
 
+			// when other navigating keys are pressed.
 			if m.state == tableView {
 				m.table2, cmd = m.table2.Update(msg)
 				return m, cmd
@@ -214,20 +250,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.state == optionsView && m.option == "create" {
 				switch m.createIndex {
 				case 0:
-					// m.textInput.Focus()
-					// m.textInput2.Blur()
-					// m.textInput3.Blur()
 					m.textInput, cmd = m.textInput.Update(msg)
 				case 1:
-					// m.textInput.Blur()
-					// m.textInput2.Focus()
-					// m.textInput3.Blur()
 					m.textInput2, cmd = m.textInput2.Update(msg)
 				case 2:
-					// m.textInput.Blur()
-					// m.textInput2.Blur()
-					// m.textInput3.Focus()
 					m.textInput3, cmd = m.textInput3.Update(msg)
+				}
+				return m, cmd
+			}
+			if m.state == optionsView && m.option == "delete" {
+				switch m.createIndex {
+				case 0:
+					m.textInput4, cmd = m.textInput4.Update(msg)
 				}
 				return m, cmd
 			}

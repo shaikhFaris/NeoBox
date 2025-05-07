@@ -89,10 +89,6 @@ func (m model) View() string {
 			if m.cursor2 == i {
 				cursor = ">"
 			}
-			// cursorStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#0FF74D")).Bold(true).Background(lipgloss.Color("#0A0118FF"))
-			// OptionTextStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#ffffff")).Bold(true).Background(lipgloss.Color("#0A0118FF"))
-
-			// %-*s ensures padding for left alignment
 			options += fmt.Sprintf("%s %d. %-*s\n\n", cursor, i+1, maxLen, choice)
 		}
 		optionsStyle := lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Height(14).AlignVertical(lipgloss.Center).PaddingLeft(6).PaddingRight(7).Foreground(lipgloss.Color("#ffffff"))
@@ -108,6 +104,20 @@ func (m model) View() string {
 				lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Faint(true).Render("• tab: switch • esc: exit\n• enter: submit"),
 			)
 			options = lipgloss.NewStyle().PaddingLeft(10).Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#ffffff")).Height(14).Render(options)
+		}
+		if m.option == "delete" {
+			// m.textInput
+			options = fmt.Sprintf(
+				"Enter the Id to delete\n\n%s\n\n%s",
+				m.textInput4.View(),
+				lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Faint(true).Render("• tab: switch • esc: exit\n• enter: submit"),
+			)
+			options = lipgloss.NewStyle().PaddingLeft(10).Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#ffffff")).Height(14).Render(options)
+		}
+		// to display sucess/err msg after db operation
+		if m.dbOpMsg != "" {
+			deleteMsgStyle := lipgloss.NewStyle().Inherit(optionsStyle).Padding(0, 3).PaddingLeft(5).Foreground(lipgloss.Color("#C9F704"))
+			options = deleteMsgStyle.Render(m.dbOpMsg)
 		}
 
 		var baseTableStyle = lipgloss.NewStyle().
