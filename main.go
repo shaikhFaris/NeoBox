@@ -36,8 +36,8 @@ type model struct {
 const (
 	host                   = "localhost"
 	port                   = 5432
-	user                   = "postgres"
-	password               = "farisgres@78"
+	user                   = "your_username"
+	password               = "your_password"
 	dbname                 = "neobox"
 	tableView sessionState = iota
 	optionsView
