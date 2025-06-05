@@ -82,7 +82,7 @@ func initialModel() model {
 	ti4.TextStyle = lipgloss.NewStyle().Background(lipgloss.Color("#0A0118FF")).Foreground(lipgloss.Color("#0FF74D"))
 
 	return model{
-		choices:     []string{"Display Passwords", "Manage Passwords", "Generate Passwords"},
+		choices:     []string{"Display Passwords", "Manage Passwords"},
 		choices2:    []string{"Create", "Delete"},
 		page:        -1,
 		table:       t,
