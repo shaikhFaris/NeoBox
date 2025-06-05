@@ -199,7 +199,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						return m, tea.Batch(
 							tea.Tick(2*time.Second, func(t time.Time) tea.Msg {
 								return clearMsg{}
-							}), fetchDataCmd(),
+							}), fetchDataCmd2(),
 						)
 					}
 				}
@@ -259,10 +259,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, cmd
 			}
 			if m.state == optionsView && m.option == "delete" {
-				switch m.createIndex {
-				case 0:
-					m.textInput4, cmd = m.textInput4.Update(msg)
-				}
+				m.textInput4, cmd = m.textInput4.Update(msg)
 				return m, cmd
 			}
 		}
